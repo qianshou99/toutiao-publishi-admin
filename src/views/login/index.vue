@@ -53,9 +53,14 @@ export default {
       }).then(res => {
         console.log(res)
         // 登录成功
+        this.$message({
+          message: '恭喜你，这是一条成功消息',
+          type: 'success'
+        })
       }).catch(err => {
         console.log('登录失败', err)
         // 登录失败
+        this.$message.error('错了哦，这是一条错误消息')
       })
     }
   }
