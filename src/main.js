@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
+// 加载element
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 // 加载全局样式
