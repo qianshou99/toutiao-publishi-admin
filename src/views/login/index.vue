@@ -19,7 +19,7 @@
         <el-checkbox v-model="checked">我已阅读并同意用户协议和隐私条款</el-checkbox>
       </el-form-item>
       <el-form-item>
-        <el-button class="login-btn" type="primary" @click="onSubmit">登录</el-button>
+        <el-button class="login-btn" type="primary" @click="onLogin">登录</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import request from '@/utils/request'
 export default {
   name: 'LoginIndex',
   data () {
@@ -39,8 +40,23 @@ export default {
     }
   },
   methods: {
-    onSubmit () {
-      console.log('submit!')
+    onLogin () {
+    // 获取表单数据（根据接口要求绑定数据）
+      const user = this.user
+      // 表单验证
+      // 表单验证通过提交登录
+      request({
+        method: 'POST',
+        url: '/mp/v1_0/authorizations',
+        // data 用来设置 POST 请求体
+        data: user
+      }).then(res => {
+        console.log(res)
+        // 登录成功
+      }).catch(err => {
+        console.log('登录失败', err)
+        // 登录失败
+      })
     }
   }
 }
