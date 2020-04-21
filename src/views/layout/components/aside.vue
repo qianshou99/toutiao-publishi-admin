@@ -6,7 +6,9 @@
       @close="handleClose"
       background-color="#545c64"
       text-color="#fff"
-      active-text-color="#ffd04b">
+      active-text-color="#ffd04b"
+      router
+      >
        <el-menu-item index="/">
         <i class="el-icon-menu"></i>
         <span slot="title">首页</span>
