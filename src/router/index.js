@@ -2,7 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 // 配置路由加载login
 import login from '@/views/login/'
-import home from '@/views/home/'
+import Home from '@/views/home/'
+import Layout from '@/views/layout/'
 Vue.use(VueRouter)
 
 const routes = [
@@ -11,12 +12,21 @@ const routes = [
     name: 'login',
     component: login
   },
+
   {
     path: '/',
-    name: 'home',
-    // 指向home
-    component: home
+    name: 'layout',
+    // 指向Layout
+    component: Layout,
+    children: [
+      {
+        path: '',
+        name: 'home',
+        component: Home
+      }
+    ]
   }
+
 ]
 
 const router = new VueRouter({
