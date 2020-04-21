@@ -1,0 +1,4 @@
+diff a/src/router/index.js b/src/router/index.js	(rejected hunks)
+@@ -15 +15 @@ const routes = [
+-  
++

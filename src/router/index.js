@@ -15,7 +15,7 @@ const routes = [
 
   {
     path: '/',
-    name: 'layout',
+    // name: 'layout',
     // 指向Layout
     component: Layout,
     children: [
