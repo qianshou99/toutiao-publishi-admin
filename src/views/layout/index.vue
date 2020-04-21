@@ -5,7 +5,27 @@
         <app-aside class="aside-menu"></app-aside>
     </el-aside>
     <el-container>
-      <el-header class="header">Header</el-header>
+        <!-- 头部 -->
+      <el-header class="header">
+          <div>
+             <i class="el-icon-s-fold"></i>
+             <span>华夏智业测评系统有限责任公司</span>
+          </div>
+          <el-dropdown>
+              <div class="avatar-wrap">
+                  <img class="avatar" src="http://toutiao.meiduo.site/FrvifflobfNNRM9V_ZBTI2ZaTH4n" alt="">
+                  <span>下拉菜单</span>
+                  <i class="el-icon-arrow-down el-icon--right"></i>
+              </div>
+            <!-- <span class="el-dropdown-link">
+                下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
+            </span> -->
+            <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item>个人设置</el-dropdown-item>
+                <el-dropdown-item>退出登录</el-dropdown-item>
+            </el-dropdown-menu>
+         </el-dropdown>
+      </el-header>
       <el-main class="main">
         <!-- 子路由出口 -->
         <router-view />
@@ -52,10 +72,24 @@ export default {
 }
 
 .header {
-  background-color: #b3c0d1;
+  display: flex;// 水平排列
+  justify-content: space-between;// 两边排列
+  align-items: center;// 垂直居中
+//   background-color: #b3c0d1;
+  border-bottom: 1px solid #ccc;
 }
 
 .main {
   background-color: #e9eef3;
+}
+.avatar-wrap{
+    display: flex;
+    align-items: center;
+    .avatar{
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
 }
 </style>
