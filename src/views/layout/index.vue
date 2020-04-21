@@ -13,8 +13,8 @@
           </div>
           <el-dropdown>
               <div class="avatar-wrap">
-                  <img class="avatar" src="http://toutiao.meiduo.site/FrvifflobfNNRM9V_ZBTI2ZaTH4n" alt="">
-                  <span>下拉菜单</span>
+                  <img class="avatar" :src="user.photo" alt="">
+                  <span>{{user.name}}</span>
                   <i class="el-icon-arrow-down el-icon--right"></i>
               </div>
             <!-- <span class="el-dropdown-link">
@@ -37,6 +37,8 @@
 <script>
 // 加载组件
 import AppAside from './components/aside'
+// 加载请求模块
+import { getUserProfile } from '@/api/user'
 export default {
   name: 'LayoutIndex',
   components: {
@@ -45,12 +47,22 @@ export default {
   },
   props: {},
   data () {
-    return {}
+    return {
+      user: {}// 当前登录用户信息
+    }
   },
   computed: {},
   watch: {},
-  created () {},
-  mounted () {},
+  created () {
+    // 组件初始化好，请求获取用户资料
+    this.loadUserProfile()
+  },
+  mounted () {
+    getUserProfile().then(res => {
+    //   console.log(res)
+      this.user = res.data.data// 请求信息
+    })
+  },
   methods: {}
 }
 </script>
