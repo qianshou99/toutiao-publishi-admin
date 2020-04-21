@@ -39,14 +39,15 @@
 </template>
 
 <script>
-import request from '@/utils/request'
+// 加载user模块中的方法login方法
+import { login } from '@/api/user'
 export default {
   name: 'LoginIndex',
   data () {
     return {
       user: {
-        mobile: '', // 手机号
-        code: '', // 验证码
+        mobile: '13911111111', // 手机号
+        code: '246810', // 验证码
         agree: false // 是否同意协议
       },
       // checked: true, // 是否同意协议的选中状态
@@ -99,22 +100,20 @@ export default {
       // 表单验证通过提交登录
       // 开启登陆中 loading...
       this.loginLoding = true
-      request({
-        method: 'POST',
-        url: '/mp/v1_0/authorizations',
-        // data 用来设置 POST 请求体
-        data: this.user
-      }).then(res => {
+      login(this.user).then(res => {
         console.log(res)
         // 登录成功
         this.$message({
           message: '恭喜你，这是一条成功消息',
           type: 'success'
         })
+        // 关闭loading
+        this.loginLoding = false
       }).catch(err => {
         console.log('登录失败', err)
         // 登录失败
         this.$message.error('错了哦，这是一条错误消息')
+        // 关闭loading
         this.loginLoding = false
       })
     }
