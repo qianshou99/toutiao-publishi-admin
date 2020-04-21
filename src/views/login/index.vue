@@ -109,6 +109,10 @@ export default {
         })
         // 关闭loading
         this.loginLoding = false
+        // 跳转到首页
+        this.$router.push({
+          name: 'home'
+        })
       }).catch(err => {
         console.log('登录失败', err)
         // 登录失败
