@@ -26,7 +26,8 @@
             </span> -->
             <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item>个人设置</el-dropdown-item>
-                <el-dropdown-item>退出登录</el-dropdown-item>
+                <!-- native你可能有很多次想要在一个组件的根元素上直接监听一个原生事件。这时，你可以使用 v-on 的 .native 修饰符 -->
+                <el-dropdown-item @click.native="onLogout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
          </el-dropdown>
       </el-header>
@@ -67,6 +68,23 @@ export default {
     loadUserProfile () {
       getUserProfile().then(res => {
         this.user = res.data.data
+      })
+    },
+    onLogout () {
+      this.$confirm('确认退出吗?', '退出提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 把用户的登录状态清除
+        window.localStorage.removeItem('user')
+        // 跳转到登录页面
+        this.$router.push('/login')
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消退出'
+        })
       })
     }
   }
