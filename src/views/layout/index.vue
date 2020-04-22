@@ -1,14 +1,18 @@
 <template>
   <el-container class="layout-container">
-    <el-aside class="aside" width="200px">
+    <el-aside class="aside" width="auto">
         <!-- 侧边导航 -->
-        <app-aside class="aside-menu"></app-aside>
+        <app-aside :is-collapse="isCollapse" class="aside-menu"></app-aside>
     </el-aside>
     <el-container>
         <!-- 头部 -->
       <el-header class="header">
           <div>
-             <i class="el-icon-s-fold"></i>
+             <i :class="{'el-icon-s-fold' : isCollapse,
+               'el-icon-s-unfold':!isCollapse
+              }"
+             @click="isCollapse = !isCollapse"
+             ></i>
              <span>华夏智业测评系统有限责任公司</span>
           </div>
           <el-dropdown>
@@ -48,7 +52,8 @@ export default {
   props: {},
   data () {
     return {
-      user: {}// 当前登录用户信息
+      user: {}, // 当前登录用户信息
+      isCollapse: false // 侧边导航栏的展开
     }
   },
   computed: {},
