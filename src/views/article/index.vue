@@ -86,6 +86,8 @@
 </template>
 
 <script>
+// 组件中加载请求方法
+import { getArticles } from '@/api/article'
 export default {
   name: 'ArticleIndex',
   components: {},
@@ -118,16 +120,25 @@ export default {
         date: '2016-05-03',
         name: '王小虎',
         address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      }],
+      articles: [] // 文章数据列表
     }
   },
   computed: {},
   watch: {},
-  created () {},
+  created () {
+    // 生命周期
+    this.loadArticles()
+  },
   mounted () {},
   methods: {
     onSubmit () {
       console.log('submit!')
+    },
+    loadArticles () {
+      getArticles().then(res => {
+        this.articles = res.data.data.results
+      })
     }
   }
 }
