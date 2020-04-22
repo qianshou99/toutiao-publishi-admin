@@ -109,6 +109,8 @@ export default {
         })
         // 关闭loading
         this.loginLoding = false
+        // 本地存储token,本地存储是字符串格式,给要存储的数据起名为user
+        window.localStorage.setItem('user', JSON.stringify(res.data.data))
         // 跳转到首页
         this.$router.push({
           name: 'home'

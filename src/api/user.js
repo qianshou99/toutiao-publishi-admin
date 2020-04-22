@@ -14,9 +14,10 @@ export const login = (data) => {
 export const getUserProfile = () => {
   return request({
     method: 'GET',
-    url: '/mp/v1_0/user/profile',
-    headers: {
-      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTg5MzQ5MzUsInVzZXJfaWQiOjEsInJlZnJlc2giOmZhbHNlLCJ2ZXJpZmllZCI6dHJ1ZX0.1v8bzMXvwfr3FZiR-Vhh0s3C29Wf_In6LgAZQoAtfhI'
-    }
+    url: '/mp/v1_0/user/profile'
+    // 拦截器中已经设置headers
+    // headers: {
+    //   Authorization: `Bearer ${user.token}`
+    // }
   })
 }
