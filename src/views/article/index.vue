@@ -37,8 +37,8 @@
         <el-button type="primary" @click="onSubmit">筛选</el-button>
     </el-form-item>
    </el-form>
-<!-- /数据筛选表单 -->
-<!-- 数据列表 -->
+   <!-- /数据筛选表单 -->
+   <!-- 数据列表 -->
      <el-table
       :data="tableData"
       stripe
@@ -58,7 +58,14 @@
         label="地址">
       </el-table-column>
     </el-table>
-<!-- 数据列表 -->
+   <!-- 数据列表 -->
+   <!-- 分页列表 -->
+    <el-pagination
+      layout="prev, pager, next"
+      background
+      :total="1000">
+    </el-pagination>
+   <!-- /分页列表 -->
   </div>
 </template>
 
