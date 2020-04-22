@@ -57,13 +57,14 @@ export default {
     // 组件初始化好，请求获取用户资料
     this.loadUserProfile()
   },
-  mounted () {
-    getUserProfile().then(res => {
-    //   console.log(res)
-      this.user = res.data.data// 请求信息
-    })
-  },
-  methods: {}
+  mounted () {},
+  methods: {
+    loadUserProfile () {
+      getUserProfile().then(res => {
+        this.user = res.data.data
+      })
+    }
+  }
 }
 </script>
 
