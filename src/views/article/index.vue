@@ -1,13 +1,17 @@
 <template>
   <div class="article-container">
+   <el-card class="filter-card">
+        <div slot="header" class="clearfix">
       <!-- 面包屑导航 -->
-    <el-breadcrumb separator-class="el-icon-arrow-right">
-     <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-     <el-breadcrumb-item>内容管理</el-breadcrumb-item>
-   </el-breadcrumb>
-   <!-- /面包屑导航 -->
+        <el-breadcrumb separator-class="el-icon-arrow-right">
+            <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item>内容管理</el-breadcrumb-item>
+        </el-breadcrumb>
+     <!-- /面包屑导航 -->
+        </div>
+        <div class="text item">
    <!-- 数据筛选表单 -->
-   <el-form ref="form" :model="form" label-width="80px">
+   <el-form ref="form" :model="form" label-width="40px" size="mini">
     <el-form-item label="特殊资源">
         <el-radio-group v-model="form.resource">
         <el-radio label="全部"></el-radio>
@@ -38,10 +42,19 @@
     </el-form-item>
    </el-form>
    <!-- /数据筛选表单 -->
+        </div>
+   </el-card>
+      <el-card class="box-card">
+        <div slot="header" class="clearfix">
+       根据筛选条件共查询到 46147 条结果：
+        </div>
+        <div class="text item">
    <!-- 数据列表 -->
      <el-table
       :data="tableData"
       stripe
+      size="mini"
+      class="list-table"
       style="width: 100%">
       <el-table-column
         prop="date"
@@ -66,6 +79,9 @@
       :total="1000">
     </el-pagination>
    <!-- /分页列表 -->
+        </div>
+   </el-card>
+
   </div>
 </template>
 
@@ -117,4 +133,11 @@ export default {
 }
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+.filter-card {
+    margin-bottom: 20px;
+}
+.list-table {
+    margin-bottom: 20px;
+}
+</style>
