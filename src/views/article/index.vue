@@ -49,7 +49,9 @@
        根据筛选条件共查询到 46147 条结果：
         </div>
         <div class="text item">
-   <!-- 数据列表 --> <!-- 把需要展示的数组列表数据绑定给 table 组件的 data 属性-->
+   <!-- 数据列表 -->
+   <!-- label 可以设定列的标题, prop  用来设定要渲染的列表项数据字段，只能展示文本 -->
+   <!-- 把需要展示的数组列表数据绑定给 table 组件的 data 属性-->
      <el-table
       :data="articles"
       stripe
@@ -72,9 +74,22 @@
         prop="pubdate"
         label="发布时间">
       </el-table-column>
-      <el-table-column
-        prop="address"
-        label="操作">
+      <el-table-column label="操作">
+        <!-- 自定义表格列 -->
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            circle
+            type="primary"
+            icon="el-icon-edit"
+            @click="handleEdit(scope.$index, scope.row)"></el-button>
+          <el-button
+            size="mini"
+            circle
+            type="danger"
+            icon="el-icon-delete"
+            @click="handleDelete(scope.$index, scope.row)"></el-button>
+      </template>
       </el-table-column>
     </el-table>
    <!-- 数据列表 -->
