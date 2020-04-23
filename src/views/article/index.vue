@@ -49,26 +49,32 @@
        根据筛选条件共查询到 46147 条结果：
         </div>
         <div class="text item">
-   <!-- 数据列表 -->
+   <!-- 数据列表 --> <!-- 把需要展示的数组列表数据绑定给 table 组件的 data 属性-->
      <el-table
-      :data="tableData"
+      :data="articles"
       stripe
       size="mini"
       class="list-table"
       style="width: 100%">
       <el-table-column
         prop="date"
-        label="日期"
-        width="180">
+        label="封面">
       </el-table-column>
       <el-table-column
-        prop="name"
-        label="姓名"
-        width="180">
+        prop="title"
+        label="标题">
+      </el-table-column>
+      <el-table-column
+        prop="status"
+        label="状态">
+      </el-table-column>
+      <el-table-column
+        prop="pubdate"
+        label="发布时间">
       </el-table-column>
       <el-table-column
         prop="address"
-        label="地址">
+        label="操作">
       </el-table-column>
     </el-table>
    <!-- 数据列表 -->
@@ -104,30 +110,14 @@ export default {
         resource: '',
         desc: ''
       },
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }],
+
       articles: [] // 文章数据列表
     }
   },
   computed: {},
   watch: {},
   created () {
-    // 生命周期
+    // 获取请求数据
     this.loadArticles()
   },
   mounted () {},
