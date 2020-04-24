@@ -61,6 +61,12 @@
       <el-table-column
         prop="date"
         label="封面">
+        <template slot-scope="scope">
+          <img  v-if="scope.row.cover.images[0]"
+          class="article-cover"
+          :src="scope.row.cover.images[0]" alt="">
+          <img v-else class="article-cover" src="./no-cover.gif" alt="">
+        </template>
       </el-table-column>
       <el-table-column
         prop="title"
@@ -68,11 +74,11 @@
       </el-table-column>
       <el-table-column label="状态">
         <template slot-scope="scope">
-          <el-tag v-if="scope.row.status === 0" type="warning">草稿</el-tag>
-          <el-tag v-if="scope.row.status === 1">待审核</el-tag>
+          <el-tag articleStatus[scope.row.status].type>{{articleStatus[scope.row.status].text}}</el-tag>
+          <!-- <el-tag v-if="scope.row.status === 1">待审核</el-tag>
           <el-tag v-if="scope.row.status === 2" type="success">审核通过</el-tag>
           <el-tag v-if="scope.row.status === 3" type="danger">审核失败</el-tag>
-          <el-tag v-if="scope.row.status === 4" type="info">已删除</el-tag>
+          <el-tag v-if="scope.row.status === 4" type="info">已删除</el-tag> -->
         </template>
       </el-table-column>
       <el-table-column
@@ -102,7 +108,8 @@
     <el-pagination
       layout="prev, pager, next"
       background
-      :total="1000">
+      :total="1000"
+      @current-change="onCurrentChange">
     </el-pagination>
    <!-- /分页列表 -->
         </div>
@@ -131,24 +138,39 @@ export default {
         desc: ''
       },
 
-      articles: [] // 文章数据列表
+      articles: [], // 文章数据列表
+      articleStatus: [
+        { status: 0, text: '草稿', type: 'info' }, // 0
+        { status: 1, text: '待审核', type: '' }, // 1
+        { status: 2, text: '审核通过', type: 'success' }, // 2
+        { status: 3, text: '审核失败', type: 'warning' }, // 3
+        { status: 4, text: '已删除', type: 'danger' } // 4
+      ]
     }
   },
   computed: {},
   watch: {},
   created () {
     // 获取请求数据
-    this.loadArticles()
+    // 初始的时候要获取第一页的数据,所以要传个1
+    this.loadArticles(1)
   },
   mounted () {},
   methods: {
     onSubmit () {
       console.log('submit!')
     },
-    loadArticles () {
-      getArticles().then(res => {
+    // page = 1是给他一个默认值,如果没传参,那默认值是1,传了默认值就是传的那个数
+    loadArticles (page = 1) {
+      getArticles({
+        page,
+        per_page: 10
+      }).then(res => {
         this.articles = res.data.data.results
       })
+    },
+    onCurrentChange (page) {
+      this.loadArticles(page)
     }
   }
 }
@@ -160,5 +182,9 @@ export default {
 }
 .list-table {
     margin-bottom: 20px;
+}
+.article-cover {
+  width: 60px;
+  background-size: cover;
 }
 </style>
