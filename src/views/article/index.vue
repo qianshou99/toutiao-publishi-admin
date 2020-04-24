@@ -105,10 +105,11 @@
     </el-table>
    <!-- 数据列表 -->
    <!-- 分页列表 -->
+   <!-- total设定总数据的条数,默认按照10条每页计算总页码 -->
     <el-pagination
       layout="prev, pager, next"
       background
-      :total="1000"
+      :total="totalCount"
       @current-change="onCurrentChange">
     </el-pagination>
    <!-- /分页列表 -->
@@ -145,7 +146,8 @@ export default {
         { status: 2, text: '审核通过', type: 'success' }, // 2
         { status: 3, text: '审核失败', type: 'warning' }, // 3
         { status: 4, text: '已删除', type: 'danger' } // 4
-      ]
+      ],
+      totalCount: 0 // 默认总数据条数为0
     }
   },
   computed: {},
@@ -166,7 +168,9 @@ export default {
         page,
         per_page: 10
       }).then(res => {
+        // console.log(res)
         this.articles = res.data.data.results
+        this.totalCount = res.data.data.total_count
       })
     },
     onCurrentChange (page) {
