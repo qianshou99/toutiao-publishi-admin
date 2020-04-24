@@ -105,12 +105,15 @@
     </el-table>
    <!-- 数据列表 -->
    <!-- 分页列表 -->
-   <!-- total设定总数据的条数,默认按照10条每页计算总页码 -->
+   <!-- total设定总数据的条数,默认按照10条每页计算总页码
+   page-size 每页显示条目个数，支持 .sync 修饰符，默认每页 10 条
+   -->
     <el-pagination
       layout="prev, pager, next"
       background
       :total="totalCount"
-      @current-change="onCurrentChange">
+      @current-change="onCurrentChange"
+      :page-size="pageSize">
     </el-pagination>
    <!-- /分页列表 -->
         </div>
@@ -147,7 +150,8 @@ export default {
         { status: 3, text: '审核失败', type: 'warning' }, // 3
         { status: 4, text: '已删除', type: 'danger' } // 4
       ],
-      totalCount: 0 // 默认总数据条数为0
+      totalCount: 0, // 默认总数据条数为0
+      pageSize: 10 // 每页大小
     }
   },
   computed: {},
@@ -166,7 +170,7 @@ export default {
     loadArticles (page = 1) {
       getArticles({
         page,
-        per_page: 10
+        per_page: this.pageSize
       }).then(res => {
         // console.log(res)
         this.articles = res.data.data.results
