@@ -38,19 +38,21 @@
     </el-form-item>
     <el-form-item label="日期">
         <el-date-picker
-          v-model="form.date1"
+          v-model="rangeDate"
           type="datetimerange"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
-          :default-time="['12:00:00']">
-        </el-date-picker>
+          :default-time="['12:00:00']"
+          format="yyyy-MM-dd"
+          value-format="yyyy-MM-dd"
+          />
     </el-form-item>
     <el-form-item>
             <!--
             button 按钮的 click 事件有个默认参数
             当你没有指定参数的时候，它会默认传递一个没用的数据
            -->
-        <el-button type="primary" @click="loadArticles(1)">筛选</el-button>
+        <el-button type="primary" :disabled="loading" @click="loadArticles(1)">筛选</el-button>
     </el-form-item>
    </el-form>
    <!-- /数据筛选表单 -->
@@ -69,15 +71,26 @@
       stripe
       size="mini"
       class="list-table"
-      style="width: 100%">
+      style="width: 100%"
+      v-loading="loading"
+      >
       <el-table-column
         prop="date"
         label="封面">
         <template slot-scope="scope">
-          <img  v-if="scope.row.cover.images[0]"
+          <el-image
+              style="width: 100px; height: 100px"
+              :src="scope.row.cover.images[0]"
+              fit="cover"
+              lazy
+            ><div slot="placeholder" class="image-slot">
+                加载中<span class="dot">...</span>
+              </div>
+          </el-image>
+          <!-- <img  v-if="scope.row.cover.images[0]"
           class="article-cover"
           :src="scope.row.cover.images[0]" alt="">
-          <img v-else class="article-cover" src="./no-cover.gif" alt="">
+          <img v-else class="article-cover" src="./no-cover.gif" alt=""> -->
         </template>
       </el-table-column>
       <el-table-column
@@ -86,7 +99,7 @@
       </el-table-column>
       <el-table-column label="状态">
         <template slot-scope="scope">
-          <el-tag articleStatus[scope.row.status].type>{{articleStatus[scope.row.status].text}}</el-tag>
+          <el-tag type="articleStatus[scope.row.status].type">{{articleStatus[scope.row.status].text}}</el-tag>
           <!-- <el-tag v-if="scope.row.status === 1">待审核</el-tag>
           <el-tag v-if="scope.row.status === 2" type="success">审核通过</el-tag>
           <el-tag v-if="scope.row.status === 3" type="danger">审核失败</el-tag>
@@ -124,6 +137,7 @@
       layout="prev, pager, next"
       background
       :total="totalCount"
+      :disabled="loading"
       @current-change="onCurrentChange"
       :page-size="pageSize">
     </el-pagination>
@@ -166,7 +180,9 @@ export default {
       pageSize: 10, // 每页大小
       status: null, // 查询文章的状态，不传就是全部
       channels: [], // 文章频道列表默认是空
-      channelId: null // 查询文章的频道
+      channelId: null, // 查询文章的频道
+      rangeDate: null, // 筛选的范围日期
+      loading: true // 表单数据加载中 loading
     }
   },
   computed: {},
@@ -188,11 +204,15 @@ export default {
         page,
         per_page: this.pageSize,
         status: this.status,
-        channel_id: this.channelId
+        channel_id: this.channelId,
+        begin_pubdate: this.rangeDate ? this.rangeDate[0] : null, // 开始日期
+        end_pubdate: this.rangeDate ? this.rangeDate[1] : null // 截止日期
       }).then(res => {
         // console.log(res)
         this.articles = res.data.data.results
         this.totalCount = res.data.data.total_count
+        // 关闭加载中 loading
+        this.loading = false
       })
     },
     onCurrentChange (page) {
