@@ -23,7 +23,11 @@
         </el-radio-group>
     </el-form-item>
     <el-form-item label="频道">
-        <el-select v-model="form.region" placeholder="请选择频道">
+        <el-select v-model="channelId" placeholder="请选择频道">
+        <el-option
+              label="全部"
+              :value="null"
+            ></el-option>
         <el-option
         :label="channel.name"
         :value="channel.id"
@@ -161,7 +165,8 @@ export default {
       totalCount: 0, // 默认总数据条数为0
       pageSize: 10, // 每页大小
       status: null, // 查询文章的状态，不传就是全部
-      channels: [] // 文章频道列表默认是空
+      channels: [], // 文章频道列表默认是空
+      channelId: null // 查询文章的频道
     }
   },
   computed: {},
@@ -182,7 +187,8 @@ export default {
       getArticles({
         page,
         per_page: this.pageSize,
-        status: this.status
+        status: this.status,
+        channel_id: this.channelId
       }).then(res => {
         // console.log(res)
         this.articles = res.data.data.results
