@@ -5,7 +5,7 @@
       <!-- 面包屑导航 -->
         <el-breadcrumb separator-class="el-icon-arrow-right">
             <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item>发布文章</el-breadcrumb-item>
+            <el-breadcrumb-item>{{ $route.query.id ? '修改文章' : '发布文章' }}</el-breadcrumb-item>
         </el-breadcrumb>
      <!-- /面包屑导航 -->
       </div>
@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { getArticleChannels, addArticle, getArticle } from '@/api/article'
+import { getArticleChannels, addArticle, getArticle, updateArticle } from '@/api/article'
 export default {
   name: 'PublishIndex',
   components: {},
@@ -101,14 +101,35 @@ export default {
       // 封装请求方法
       // 请求提交表单
       // 处理响应结果
-      addArticle(this.article, draft).then(res => {
-        // 处理响应结果
-      // console.log(res)
-        this.$message({
-          message: '发布成功',
-          type: 'success'
+      // 如果是修改文章，则执行修改操作，否则执行添加操作
+      // 如果路径中有id就执行修改操作
+      const articleId = this.$route.query.id
+      if (articleId) {
+        // 修改文章
+        updateArticle(articleId, this.article, draft).then(res => {
+          // console.log(res)
+          this.$message({
+            // 如果draft是true存入草稿,如果draft是false是发布成功
+            message: `${draft ? '存入草稿' : '发布'}成功`,
+            type: 'success'
+          })
+          // 跳转到内容管理页面
+          this.$router.push('/article')
         })
-      })
+      } else {
+        // 执行添加操作
+        addArticle(this.article, draft).then(res => {
+        // 处理响应结果
+        // console.log(res)
+          this.$message({
+            // 如果draft是true存入草稿,如果draft是false是发布成功
+            message: `${draft ? '存入草稿' : '发布'}成功`,
+            type: 'success'
+          })
+          // 跳转到内容管理页面
+          this.$router.push('/article')
+        })
+      }
     },
     // 修改文章,加载文章内容
     loadArticle () {
