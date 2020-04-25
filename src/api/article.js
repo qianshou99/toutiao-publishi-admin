@@ -30,13 +30,13 @@ export const deleteArticle = articleId => {
     url: `/mp/v1_0/articles/${articleId}`
   })
 }
-// 发布文章获取请求
+// 发表文章数据接口
 export const addArticle = (data, draft = false) => {
   return request({
     method: 'POST',
-    url: ' /mp/v1_0/articles',
+    url: '/mp/v1_0/articles',
     params: {
-      draft// 是否存为草稿（true 为草稿
+      draft // 是否存为草稿（true 为草稿
     },
     data
   })
