@@ -13,19 +13,21 @@
       <div class="text item">
         <el-form ref="form" :model="form" label-width="80px">
             <el-form-item label="标题">
-              <el-input v-model="form.name"></el-input>
+              <el-input v-model="article.title"></el-input>
             </el-form-item>
             <el-form-item label="内容">
-              <el-input type="textarea" v-model="form.desc"></el-input>
+              <el-input type="textarea" v-model="article.content"></el-input>
             </el-form-item>
             <el-form-item label="封面">
-              <el-radio-group v-model="form.resource">
-                <el-radio label="线上品牌商赞助"></el-radio>
-                <el-radio label="线下场地免费"></el-radio>
+              <el-radio-group v-model="article.cover">
+                <el-radio label="单图"></el-radio>
+                <el-radio label="三图"></el-radio>
+                <el-radio label="无图"></el-radio>
+                <el-radio label="自动"></el-radio>
               </el-radio-group>
             </el-form-item>
             <el-form-item label="频道">
-              <el-select v-model="form.region" placeholder="请选择活动区域">
+              <el-select v-model="article.channel_id" placeholder="请选择活动区域">
                 <el-option label="区域一" value="shanghai"></el-option>
                 <el-option label="区域二" value="beijing"></el-option>
               </el-select>
@@ -57,6 +59,15 @@ export default {
         type: [],
         resource: '',
         desc: ''
+      },
+      article: {
+        title: '', // 文章标题
+        content: '', // 文章内容
+        cover: {
+          type: '0',
+          images: []
+        }, // 封面
+        channel_id: ''// 所属频道
       }
     }
   },
