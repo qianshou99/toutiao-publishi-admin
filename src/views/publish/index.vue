@@ -37,8 +37,8 @@
               </el-select>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="onSubmit">发表</el-button>
-              <el-button>存入草稿</el-button>
+              <el-button type="primary" @click="onPublish(false)">发表</el-button>
+              <el-button @click="onPublish(true)">存入草稿</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { getArticleChannels } from '@/api/article'
+import { getArticleChannels, addArticle } from '@/api/article'
 export default {
   name: 'PublishIndex',
   components: {},
@@ -80,8 +80,13 @@ export default {
   computed: {},
   watch: {},
   created () {
-    // 获取请求数据
+    // 加载频道获取请求数据
     this.loadChannels()
+    // 如果路由路径参数中有 id，则请求展示文章内容
+    if (this.$route.query.id) {
+      // 加载获取文章
+      this.loadArticle()
+    }
   },
   mounted () {},
   methods: {
@@ -91,8 +96,27 @@ export default {
         this.channels = res.data.data.channels
       })
     },
-    onSubmit () {
-      console.log('submit!')
+    onPublish (draft = false) {
+      // 找到数据接口
+      // 封装请求方法
+      // 请求提交表单
+      // 处理响应结果
+      addArticle(this.article, draft).then(res => {
+        // 处理响应结果
+      // console.log(res)
+        this.$message({
+          message: '发布成功',
+          type: 'success'
+        })
+      })
+    },
+    // 修改文章,加载文章内容
+    loadArticle () {
+      console.log('loadArticle')
+      // 找到数据接口
+      // 封装请求方法
+      // 请求获取数据
+      // 模板绑定展示
     }
   }
 }
