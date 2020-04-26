@@ -11,9 +11,13 @@
         <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
       </div>
       <div style="padding-bottom: 20px;">
-        <el-radio-group v-model="radio1" size="mini">
-          <el-radio-button label="全部"></el-radio-button>
-          <el-radio-button label="收藏"></el-radio-button>
+        <el-radio-group v-model="collect" size="mini" @change="onCollectChange">
+          <el-radio-button
+          label="false"
+          >全部</el-radio-button>
+          <el-radio-button
+          label="true"
+          >收藏</el-radio-button>
         </el-radio-group>
       </div>
       <!-- 素材列表 -->
@@ -48,7 +52,7 @@ export default {
   props: {},
   data () {
     return {
-      radio1: '全部',
+      collect: false, // 默认查询全部素材列表
       images: [] // 图片素材列表
     }
   },
@@ -56,15 +60,22 @@ export default {
   watch: {},
   created () {
     // 初始化加载数据
-    this.loadImages()
+    this.loadImages(false)
+    // 默认是全部图片,所以默认是false,
   },
   mounted () {},
   methods: {
-    loadImages () {
+    loadImages (collect = false) {
       //  results中没有 images 所以要到data中去声明出来一个空数组
-      getImages().then(res => {
+      getImages({
+        collect
+      }).then(res => {
         this.images = res.data.data.results
       })
+    },
+    onCollectChange (value) {
+    //   console.log(value) value是布尔值,可以把布尔值传给loadImages
+      this.loadImages(value)
     }
   }
 }
