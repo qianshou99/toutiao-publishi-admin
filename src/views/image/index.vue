@@ -22,6 +22,7 @@
         <el-button
           size="mini"
           type="success"
+          @click="dialogUploadVisible = true"
         >上传素材</el-button>
       </div>
       <!-- 素材列表 -->
@@ -44,6 +45,12 @@
       </el-row>
       <!-- /素材列表 -->
     </el-card>
+    <el-dialog
+    title="上传素材"
+    :visible.sync="dialogUploadVisible"
+    :append-to-body="true"
+    >
+    </el-dialog>
   </div>
 </template>
 
@@ -57,7 +64,9 @@ export default {
   data () {
     return {
       collect: false, // 默认查询全部素材列表
-      images: [] // 图片素材列表
+      images: [], // 图片素材列表
+      // dialogUploadVisible   控制上传的可行性
+      dialogUploadVisible: false // 默认是看不到的
     }
   },
   computed: {},
