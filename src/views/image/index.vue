@@ -13,10 +13,10 @@
       <div class="action-head">
         <el-radio-group v-model="collect" size="mini" @change="onCollectChange">
           <el-radio-button
-          label="false"
+          :label="false"
           >全部</el-radio-button>
           <el-radio-button
-          label="true"
+          :label="true"
           >收藏</el-radio-button>
         </el-radio-group>
         <el-button
@@ -37,19 +37,47 @@
         >
           <el-image
             style="height: 100px"
-            src="img.url"
+            :src="img.url"
             fit="cover"
           ></el-image>
         </el-col>
 
       </el-row>
       <!-- /素材列表 -->
+      <!-- 分页列表 -->
+
+   <!-- total设定总数据的条数,默认按照10条每页计算总页码
+   page-size 每页显示条目个数，支持 .sync 修饰符，默认每页 10 条
+   -->
+        <el-pagination
+          background
+          layout="prev, pager, next"
+          :total="totalCount"
+          :page-size="pageSize"
+          @current-change="onCurrentChange"
+        >
+        </el-pagination>
+      <!-- /分页列表 -->
     </el-card>
     <el-dialog
-    title="上传素材"
-    :visible.sync="dialogUploadVisible"
-    :append-to-body="true"
+      title="上传素材"
+      :visible.sync="dialogUploadVisible"
+      :append-to-body="true"
     >
+        <!-- upload拖拽上传组件,action必须是完整路径 -->
+        <el-upload
+            class="upload-demo"
+            drag
+            action="http://ttapi.research.itcast.cn/mp/v1_0/user/images"
+            :headers="uploadHeaders"
+            name="image"
+            :on-success="onUploadSuccess"
+            :show-file-list="false"
+            multiple>
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+            <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+        </el-upload>
     </el-dialog>
   </div>
 </template>
@@ -62,33 +90,54 @@ export default {
   components: {},
   props: {},
   data () {
+    const user = JSON.parse(window.localStorage.getItem('user'))
     return {
       collect: false, // 默认查询全部素材列表
       images: [], // 图片素材列表
       // dialogUploadVisible   控制上传的可行性
-      dialogUploadVisible: false // 默认是看不到的
+      dialogUploadVisible: false, // 默认是看不到的
+      uploadHeaders: {
+        Authorization: `Bearer ${user.token}`
+      },
+      totalCount: 0, // 默认总数据条数为0
+      pageSize: 12 // 每页大小
     }
   },
   computed: {},
   watch: {},
   created () {
     // 初始化加载数据
-    this.loadImages(false)
+    this.loadImages(1)
     // 默认是全部图片,所以默认是false,
   },
   mounted () {},
   methods: {
-    loadImages (collect = false) {
+    // 同学,参数1默认值不能省略的哦
+    // 如果想要省略,要把有默认值的参数作为最后一个参数
+    loadImages (page, collect = false) {
       //  results中没有 images 所以要到data中去声明出来一个空数组
       getImages({
-        collect
+        collect,
+        page,
+        per_page: this.pageSize // 分页组件的每页大小要和你的实际每页数据大小一致!!!,否则页码计算就会出现错误
       }).then(res => {
         this.images = res.data.data.results
+        this.totalCount = res.data.data.total_count
       })
     },
     onCollectChange (value) {
     //   console.log(value) value是布尔值,可以把布尔值传给loadImages
-      this.loadImages(value)
+      this.loadImages(1, value)
+    },
+    onUploadSuccess () {
+      // 关闭对话框
+      this.dialogUploadVisible = false
+
+      // 更新素材列表
+      this.loadImages(1, false)
+    },
+    onCurrentChange (page) {
+      this.loadImages(page, this.collect)
     }
   }
 }
