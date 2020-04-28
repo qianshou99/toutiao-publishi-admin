@@ -9,25 +9,45 @@
         </el-breadcrumb>
         <!-- /面包屑路径导航 -->
       </div>
+      <!-- 数据绑定给表格的data,2.设计表格列3.给表格列绑定需要的数据字段 -->
       <el-table
         class="table-list"
-        :data="tableData"
+        :data="articles"
         style="width: 100%"
         stripe
       >
         <el-table-column
-          prop="date"
-          label="日期"
-          width="180">
+          prop="title"
+          label="标题">
         </el-table-column>
         <el-table-column
-          prop="name"
-          label="姓名"
-          width="180">
+          prop="total_comment_count"
+          label="总评论数">
+        </el-table-column>
+        <el-table-column
+          prop="fans_comment_count"
+          label="粉丝评论数">
+        </el-table-column>
+        <el-table-column
+          prop="comment_status"
+          label="评论状态">
+          <template slot-scope="scope">
+             {{ scope.row.comment_status ? '正常' : '关闭' }}
+          </template>
         </el-table-column>
         <el-table-column
           prop="address"
-          label="地址">
+          label="操作">
+          <template slot-scope="scope">
+            <el-switch
+              v-model="scope.row.comment_status"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              @change="onStatusChange(scope.row)"
+              :disabled = "scope.row.statusDisabled"
+              >
+            </el-switch>
+          </template>
         </el-table-column>
       </el-table>
       <el-pagination
@@ -46,6 +66,7 @@
 </template>
 
 <script>
+import { getArticles, updateCommentStatus } from '@/api/article'
 export default {
   name: 'CommentIndex',
   components: {},
@@ -68,16 +89,48 @@ export default {
         date: '2016-05-03',
         name: '王小虎',
         address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      }],
+      articles: [] // 文章数据列表
     }
   },
   computed: {},
   watch: {},
-  created () {},
+  created () {
+    // 初始化的时候获取数据
+    this.loadArticles()
+  },
   mounted () {},
   methods: {
     handleSizeChange () {},
-    handleCurrentChange () {}
+    handleCurrentChange () {},
+    loadArticles () {
+      // 获取评论数据
+      getArticles({
+        response_type: 'comment'
+      }).then(res => {
+        console.log(res)
+        const { results } = res.data.data
+        results.forEach(article => {
+          article.statusDisabled = false
+        })
+        this.articles = results
+      })
+    },
+    // 修改评论状态
+    onStatusChange (article) {
+      // 请求期间被禁用
+      article.statusDisabled = true
+      //   console.log(articles)
+      updateCommentStatus(article.id.toString(), article.comment_status).then(res => {
+        // 启用开关
+        article.statusDisabled = false
+        // console.log(res)
+        this.$message({
+          type: 'success',
+          message: article.comment_status ? '开启文章评论状态' : '关闭文章评论状态'
+        })
+      })
+    }
   }
 }
 </script>
