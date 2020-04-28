@@ -48,10 +48,22 @@
                 type="file"
                 hidden
                 ref="file"
+                @change="onFileChange"
             >
             </el-col>
         </el-row>
     </el-card>
+    <el-dialog
+      title="修改头像"
+      :visible.sync="dialogVisible"
+      append-to-body
+    >
+      <img width="150" :src="previewImage" alt="">
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -80,7 +92,9 @@ export default {
         mobile: '',
         name: '',
         photo: ''
-      } // 用户资料
+      }, // 用户资料
+      dialogVisible: false,
+      previewImage: '' // 预览图片
     }
   },
   computed: {},
@@ -99,6 +113,19 @@ export default {
         // console.log(res)
         this.user = res.data.data
       })
+    },
+    onFileChange () {
+      console.log('file change')
+      // 弹层显示
+      this.dialogVisible = true
+      // 处里图片预览
+      const file = this.$refs.file
+
+      const blobData = window.URL.createObjectURL(file.files[0])
+
+      this.previewImage = blobData
+      // 解决选择相同文件不触发 change 事件问题
+      this.$refs.file.value = ''
     }
   }
 }
