@@ -34,13 +34,21 @@
             </el-col>
             <!-- offset偏移 -->
             <el-col :offset="2" :span="4">
-            <el-avatar
-                shape="square"
-                :size="150"
-                fit="cover"
-                :src="user.photo"
-            ></el-avatar>
-            <p>点击修改头像</p>
+            <label for="file">
+                <el-avatar
+                    shape="square"
+                    :size="150"
+                    fit="cover"
+                    :src="user.photo"
+                ></el-avatar>
+            </label>
+            <!-- <p @click="$refs.file.click()">点击修改头像</p> -->
+            <input
+                id="file"
+                type="file"
+                hidden
+                ref="file"
+            >
             </el-col>
         </el-row>
     </el-card>
