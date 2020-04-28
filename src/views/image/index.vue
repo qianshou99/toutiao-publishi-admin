@@ -34,12 +34,23 @@
         :lg="4"
         v-for="(img, index) in images"
         :key="index"
+        class="image-item"
         >
           <el-image
             style="height: 100px"
             :src="img.url"
             fit="cover"
           ></el-image>
+           <div class="image-action">
+             <!-- is_collected是true就是收藏 -->
+            <i
+            :class="{
+              'el-icon-star-on':img.is_collected,
+              'el-icon-star-off':!img.is_collected
+              }"
+            ></i>
+            <i class="el-icon-delete-solid"></i>
+          </div>
         </el-col>
 
       </el-row>
@@ -55,6 +66,7 @@
           :total="totalCount"
           :page-size="pageSize"
           @current-change="onCurrentChange"
+          :current-page.sync="page"
         >
         </el-pagination>
       <!-- /分页列表 -->
@@ -100,7 +112,8 @@ export default {
         Authorization: `Bearer ${user.token}`
       },
       totalCount: 0, // 默认总数据条数为0
-      pageSize: 12 // 每页大小
+      pageSize: 12, // 每页大小
+      page: 1 // 当前页码
     }
   },
   computed: {},
@@ -115,6 +128,8 @@ export default {
     // 同学,参数1默认值不能省略的哦
     // 如果想要省略,要把有默认值的参数作为最后一个参数
     loadImages (page, collect = false) {
+      // 重置高亮页码
+      this.page = page
       //  results中没有 images 所以要到data中去声明出来一个空数组
       getImages({
         collect,
@@ -134,7 +149,11 @@ export default {
       this.dialogUploadVisible = false
 
       // 更新素材列表
-      this.loadImages(1, false)
+      this.loadImages(this.page, false)
+      this.$message({
+        type: 'success',
+        message: '上传成功'
+      })
     },
     onCurrentChange (page) {
       this.loadImages(page, this.collect)
@@ -150,4 +169,21 @@ export default {
  // 左右撑开
   justify-content: space-between;
 }
+.image-item{
+  position: relative;
+}
+.image-action{
+  font-size: 25px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  color: #fff;
+  height: 40px;
+  background-color: rgba(204, 204, 204, .5);
+  position: absolute;
+  bottom: 4px;
+  left: 5px;
+  right: 5px;
+}
+
 </style>
