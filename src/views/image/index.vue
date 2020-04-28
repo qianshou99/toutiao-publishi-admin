@@ -50,6 +50,14 @@
               @click="onCollect(img)"
               :loading="img.loading"
             ></el-button>
+            <el-button
+              size="small"
+              type="danger"
+              icon="el-icon-delete-solid"
+              circle
+              :loading="img.loading"
+              @click="onDelete(img)"
+            ></el-button>
              <!-- is_collected是true就是收藏 -->
             <!-- <i
             :class="{
@@ -58,7 +66,7 @@
               }"
               @click="onCollect(img)"
             ></i> -->
-            <i class="el-icon-delete-solid"></i>
+            <!-- <i class="el-icon-delete-solid"></i> -->
           </div>
         </el-col>
 
@@ -105,7 +113,7 @@
 
 <script>
 // 加载请求接口
-import { getImages, collectImage } from '@/api/image'
+import { getImages, collectImage, deleteImage } from '@/api/image'
 export default {
   name: 'ImageIndex',
   components: {},
@@ -188,6 +196,14 @@ export default {
         // 更新视图状态
         img.is_collected = !img.is_collected
         // 收藏完成关闭loading
+        img.loading = false
+      })
+    },
+    onDelete (img) {
+      img.loading = true
+      // 找到数据接口,封装请求方法,请求调用,处理响应结果(重新加载当前页码的数据列表)
+      deleteImage(img.id).then(res => {
+        this.loadImages(this.page)
         img.loading = false
       })
     }
