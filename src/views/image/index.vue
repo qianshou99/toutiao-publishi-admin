@@ -42,13 +42,22 @@
             fit="cover"
           ></el-image>
            <div class="image-action">
+            <el-button
+              type="warning"
+              :icon="img.is_collected ? 'el-icon-star-on' : 'el-icon-star-off'"
+              circle
+              size="small"
+              @click="onCollect(img)"
+              :loading="img.loading"
+            ></el-button>
              <!-- is_collected是true就是收藏 -->
-            <i
+            <!-- <i
             :class="{
               'el-icon-star-on':img.is_collected,
               'el-icon-star-off':!img.is_collected
               }"
-            ></i>
+              @click="onCollect(img)"
+            ></i> -->
             <i class="el-icon-delete-solid"></i>
           </div>
         </el-col>
@@ -96,7 +105,7 @@
 
 <script>
 // 加载请求接口
-import { getImages } from '@/api/image'
+import { getImages, collectImage } from '@/api/image'
 export default {
   name: 'ImageIndex',
   components: {},
@@ -136,7 +145,13 @@ export default {
         page,
         per_page: this.pageSize // 分页组件的每页大小要和你的实际每页数据大小一致!!!,否则页码计算就会出现错误
       }).then(res => {
-        this.images = res.data.data.results
+        const results = res.data.data.results
+        results.forEach(img => {
+          // img 对象本来没有 loading 数据
+          // 我们这里收到的往里面添加该数据是用来控制每个收藏按钮的 loading 状态
+          img.loading = false
+        })
+        this.images = results
         this.totalCount = res.data.data.total_count
       })
     },
@@ -157,6 +172,24 @@ export default {
     },
     onCurrentChange (page) {
       this.loadImages(page, this.collect)
+    },
+    onCollect (img) {
+      // 先去封装接口
+      // 如果已收藏就取消收藏
+      // if (img.is_collected) {
+      //   collectImage(img.id, false)
+      // } else {
+      //   // 如果没有收藏就添加收藏
+      //   collectImage(img.id, true)
+      // }
+      // 收藏的时候展示loading
+      img.loading = true
+      collectImage(img.id, !img.is_collected).then(res => {
+        // 更新视图状态
+        img.is_collected = !img.is_collected
+        // 收藏完成关闭loading
+        img.loading = false
+      })
     }
   }
 }
