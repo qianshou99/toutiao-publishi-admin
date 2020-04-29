@@ -53,22 +53,39 @@
             </el-col>
         </el-row>
     </el-card>
+    <!-- Dialog 打开动画结束时的回调 -->
     <el-dialog
       title="修改头像"
       :visible.sync="dialogVisible"
       append-to-body
+      @opened="onDialogOpened"
+      @closed="onDialogClosed"
     >
-      <img width="150" :src="previewImage" alt="">
+      <div class="preview-image-wrap">
+        <img
+        class="preview-image"
+        :src="previewImage"
+        ref="preview-image"
+        >
+      </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button
+        type="primary"
+        @click="onUpdatePhoto"
+        >确 定</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { getUserProfile } from '@/api/user'
+import {
+  getUserProfile,
+  updateUserPhoto
+} from '@/api/user'
+import 'cropperjs/dist/cropper.css'
+import Cropper from 'cropperjs'
 export default {
   name: 'SettingsIndex',
   components: {},
@@ -93,8 +110,9 @@ export default {
         name: '',
         photo: ''
       }, // 用户资料
-      dialogVisible: false,
-      previewImage: '' // 预览图片
+      dialogVisible: false, // 弹层
+      previewImage: '', // 预览图片
+      cropper: null // 裁切器实例
     }
   },
   computed: {},
@@ -126,9 +144,72 @@ export default {
       this.previewImage = blobData
       // 解决选择相同文件不触发 change 事件问题
       this.$refs.file.value = ''
+    },
+    onDialogOpened () {
+      // 获取图片 DOM 节点
+      const image = this.$refs['preview-image']
+      // 第1次初始化好以后，如果预览裁切的图片发生了变化，裁切器默认不会更新
+      // 如果需要预览图片发生变化更新裁切器：
+      //    方式一：裁切器.replace 方法
+      //    方式二：销毁裁切器，重新初始化
+      // 初始化裁切器
+      if (this.cropper) {
+        this.cropper.replace(this.previewImage) // 替换剪裁图片的路径
+        return
+      }
+      this.cropper = new Cropper(image, {
+        // aspectRatio: 16 / 9,
+        viewMode: 1,
+        dragMode: 'none',
+        aspectRatio: 1,
+        cropBoxResizable: false
+        // crop (event) {
+        //   console.log(event.detail.x)
+        //   console.log(event.detail.y)
+        //   console.log(event.detail.width)
+        //   console.log(event.detail.height)
+        //   console.log(event.detail.rotate)
+        //   console.log(event.detail.scaleX)
+        //   console.log(event.detail.scaleY)
+        // }
+      })
+    },
+    onDialogClosed () {
+      // 对话框关闭，销毁裁切器
+      // this.cropper.destroy()
+    },
+    onUpdatePhoto () {
+      // 获取裁切的图片对象
+      this.cropper.getCroppedCanvas().toBlob(file => {
+        const fd = new FormData()
+        fd.append('photo', file)
+        // 请求提交 fd
+        updateUserPhoto(fd).then(res => {
+          // 关闭对话框
+          this.dialogVisible = false
+          // 直接把裁切结果的文件对象转为 blob 数据本地预览
+          this.user.photo = window.URL.createObjectURL(file)
+          // 把服务端返回的图片进行展示有点慢
+          // this.user.photo = res.data.data.photo
+        })
+      })
+      // 请求更新用户头像
+      // 关闭对话框
+      // 更新视图展示
     }
   }
 }
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+.preview-image-wrap {
+  /* Ensure the size of the image fit the container perfectly */
+  .preview-image {
+    display: block;
+
+    /* This rule is very important, please don't ignore this */
+    max-width: 100%;
+    height: 200px;
+  }
+}
+</style>
