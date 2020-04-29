@@ -11,7 +11,7 @@
         </div>
         <el-row>
             <el-col :span="15">
-            <el-form ref="form" :model="form" label-width="70px">
+            <el-form ref="form" :model="user" label-width="70px">
                 <el-form-item label="编号">
                 {{ user.id }}
                 </el-form-item>
@@ -28,7 +28,11 @@
                 <el-input v-model="user.email"></el-input>
                 </el-form-item>
                 <el-form-item>
-                <el-button type="primary" @click="onSubmit">保存</el-button>
+                <el-button
+                type="primary"
+                :loading="updateProfileLoading"
+                @click="onUpdateUser"
+                >保存</el-button>
                 </el-form-item>
             </el-form>
             </el-col>
@@ -83,26 +87,19 @@
 <script>
 import {
   getUserProfile,
-  updateUserPhoto
+  updateUserPhoto,
+  updateUserProfile
 } from '@/api/user'
 import 'cropperjs/dist/cropper.css'
 import Cropper from 'cropperjs'
+import globalBus from '@/utils/global-bus'
 export default {
   name: 'SettingsIndex',
   components: {},
   props: {},
   data () {
     return {
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
-      },
+
       user: {
         email: '',
         id: null,
@@ -114,7 +111,8 @@ export default {
       dialogVisible: false, // 弹层
       previewImage: '', // 预览图片
       cropper: null, // 裁切器实例
-      updatePhotoLoading: false // 更新用户头像 loading 状态
+      updatePhotoLoading: false, // 更新用户头像 loading 状态
+      updateProfileLoading: false // 点击保存 loading 初始状态
     }
   },
   computed: {},
@@ -125,8 +123,26 @@ export default {
   },
   mounted () {},
   methods: {
-    onSubmit () {
-      console.log('submit!')
+    // 更新用户信息
+    onUpdateUser () {
+      // 表单验证
+      // 验证通过，提交表单
+      // 开启 loading 状态
+      this.updateProfileLoading = true
+      updateUserProfile({
+        name: this.user.name,
+        intro: this.user.intro,
+        email: this.user.email
+      }).then(res => {
+        this.$message({
+          type: 'success',
+          message: '保存成功'
+        })
+        this.updateProfileLoading = false
+        // 更新头部当前登录用户的信息
+        // 用户信息已修改发布通知
+        globalBus.$emit('update-user', this.user)
+      })
     },
     loadUser () {
       getUserProfile().then(res => {
@@ -201,6 +217,8 @@ export default {
             type: 'success',
             message: '更新头像成功'
           })
+          // 更新顶部登录用户的信息
+          globalBus.$emit('update-user', this.user)
         })
       })
       // 请求更新用户头像

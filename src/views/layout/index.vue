@@ -13,7 +13,7 @@
               }"
              @click="isCollapse = !isCollapse"
              ></i>
-             <span>华夏智业测评系统有限责任公司</span>
+             <span>黑马头条有限责任公司</span>
           </div>
           <el-dropdown>
               <div class="avatar-wrap">
