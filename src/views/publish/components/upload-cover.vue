@@ -4,7 +4,7 @@
         <img
           class="cover-image"
           ref="cover-image"
-          :src="coverImage"
+          :src="value"
         >
       </div>
         <!-- 弹出层 -->
@@ -47,7 +47,8 @@ import { uploadImage } from '@/api/image'
 export default {
   name: 'UploadCove',
   components: {},
-  props: ['cover-image'],
+  props: ['value'],
+  //   props: ['cover-image'],
   data () {
     return {
       dialogVisible: false,
@@ -89,7 +90,7 @@ export default {
           // 展示上传的图片
           this.$refs['cover-image'].src = res.data.data.url
           // 将图片地址发送给父组件
-          this.$emit('update-cover', res.data.data.url)
+          this.$emit('input', res.data.data.url)
         })
       }
     }
