@@ -130,7 +130,7 @@ export default {
         title: '', // 文章标题
         content: '', // 文章内容
         cover: {
-          type: 0,
+          type: 1,
           images: []
         }, // 封面
         channel_id: null
