@@ -1,8 +1,8 @@
 <template>
-    <div class="image-container">
+  <div class="image-container">
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <!-- 面包屑路径导航 -->
+       <!-- 面包屑路径导航 -->
         <el-breadcrumb separator-class="el-icon-arrow-right">
           <el-breadcrumb-item to="/">首页</el-breadcrumb-item>
           <el-breadcrumb-item>素材管理</el-breadcrumb-item>
@@ -10,169 +10,28 @@
         <!-- /面包屑路径导航 -->
         <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
       </div>
-      <div class="action-head">
-        <el-radio-group v-model="collect" size="mini" @change="onCollectChange">
-          <el-radio-button
-          :label="false"
-          >全部</el-radio-button>
-          <el-radio-button
-          :label="true"
-          >收藏</el-radio-button>
-        </el-radio-group>
-        <el-button
-          size="mini"
-          type="success"
-          @click="dialogUploadVisible = true"
-        >上传素材</el-button>
-      </div>
-      <!-- 素材列表 -->
-      <el-row :gutter="10">
-        <el-col
-        :xs="12"
-        :sm="6"
-        :md="6"
-        :lg="4"
-        v-for="(img, index) in images"
-        :key="index"
-        class="image-item"
-        >
-          <el-image
-            style="height: 100px"
-            :src="img.url"
-            fit="cover"
-          ></el-image>
-           <div class="image-action">
-            <el-button
-              type="warning"
-              :icon="img.is_collected ? 'el-icon-star-on' : 'el-icon-star-off'"
-              circle
-              size="small"
-              @click="onCollect(img)"
-              :loading="img.loading"
-            ></el-button>
-            <el-button
-              size="small"
-              type="danger"
-              icon="el-icon-delete-solid"
-              circle
-              :loading="img.loading"
-              @click="onDelete(img)"
-            ></el-button>
-             <!-- is_collected是true就是收藏 -->
-            <!-- <i
-            :class="{
-              'el-icon-star-on':img.is_collected,
-              'el-icon-star-off':!img.is_collected
-              }"
-              @click="onCollect(img)"
-            ></i> -->
-            <!-- <i class="el-icon-delete-solid"></i> -->
-          </div>
-        </el-col>
-
+      <!-- 图片列表 -->
+      <image-list />
+      <!-- /图片列表 -->
     </el-card>
   </div>
 </template>
-
 <script>
 // 加载请求接口
-import { getImages, collectImage, deleteImage } from '@/api/image'
+// import { getImages, collectImage, deleteImage } from '@/api/image'
+import ImageList from './components/image-list'
 export default {
   name: 'ImageIndex',
-  components: {},
+  components: { ImageList },
   props: {},
   data () {
-    const user = JSON.parse(window.localStorage.getItem('user'))
-    return {
-      collect: false, // 默认查询全部素材列表
-      images: [], // 图片素材列表
-      // dialogUploadVisible   控制上传的可行性
-      dialogUploadVisible: false, // 默认是看不到的
-      uploadHeaders: {
-        Authorization: `Bearer ${user.token}`
-      },
-      totalCount: 0, // 默认总数据条数为0
-      pageSize: 12, // 每页大小
-      page: 1 // 当前页码
-    }
+    return {}
   },
   computed: {},
   watch: {},
-  created () {
-    // 初始化加载数据
-    this.loadImages(1)
-    // 默认是全部图片,所以默认是false,
-  },
+  created () {},
   mounted () {},
-  methods: {
-    // 同学,参数1默认值不能省略的哦
-    // 如果想要省略,要把有默认值的参数作为最后一个参数
-    loadImages (page, collect = false) {
-      // 重置高亮页码
-      this.page = page
-      //  results中没有 images 所以要到data中去声明出来一个空数组
-      getImages({
-        collect,
-        page,
-        per_page: this.pageSize // 分页组件的每页大小要和你的实际每页数据大小一致!!!,否则页码计算就会出现错误
-      }).then(res => {
-        const results = res.data.data.results
-        results.forEach(img => {
-          // img 对象本来没有 loading 数据
-          // 我们这里收到的往里面添加该数据是用来控制每个收藏按钮的 loading 状态
-          img.loading = false
-        })
-        this.images = results
-        this.totalCount = res.data.data.total_count
-      })
-    },
-    onCollectChange (value) {
-    //   console.log(value) value是布尔值,可以把布尔值传给loadImages
-      this.loadImages(1, value)
-    },
-    onUploadSuccess () {
-      // 关闭对话框
-      this.dialogUploadVisible = false
-
-      // 更新素材列表
-      this.loadImages(this.page, false)
-      this.$message({
-        type: 'success',
-        message: '上传成功'
-      })
-    },
-    onCurrentChange (page) {
-      this.loadImages(page, this.collect)
-    },
-    onCollect (img) {
-      // 先去封装接口
-      // 如果已收藏就取消收藏
-      // if (img.is_collected) {
-      //   collectImage(img.id, false)
-      // } else {
-      //   // 如果没有收藏就添加收藏
-      //   collectImage(img.id, true)
-      // }
-      // 收藏的时候展示loading
-      img.loading = true
-      collectImage(img.id, !img.is_collected).then(res => {
-        // 更新视图状态
-        img.is_collected = !img.is_collected
-        // 收藏完成关闭loading
-        img.loading = false
-      })
-    },
-    onDelete (img) {
-      img.loading = true
-      // 找到数据接口,封装请求方法,请求调用,处理响应结果(重新加载当前页码的数据列表)
-      deleteImage(img.id).then(res => {
-        this.loadImages(this.page)
-        img.loading = false
-      })
-    }
-  }
+  methods: {}
 }
 </script>
-
-<style scoped lang="less">
-</style>
+<style scoped lang="less"></style>

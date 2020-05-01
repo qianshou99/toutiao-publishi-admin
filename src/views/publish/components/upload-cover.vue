@@ -16,7 +16,12 @@
         >
         <!-- tab栏 -->
         <el-tabs v-model="activeName" type="card">
-            <el-tab-pane label="素材库" name="first">素材库内容</el-tab-pane>
+            <el-tab-pane label="素材库" name="first">
+                <image-list
+                    :is-show-add="false"
+                    :is-show-action="false"
+                />
+            </el-tab-pane>
             <el-tab-pane label="上传图片" name="second">
                 <input
                     type="file"
@@ -44,9 +49,12 @@
 <script>
 // 上传图片接口
 import { uploadImage } from '@/api/image'
+import ImageList from '@/views/image/components/image-list'
 export default {
   name: 'UploadCove',
-  components: {},
+  components: {
+    ImageList
+  },
   props: ['value'],
   //   props: ['cover-image'],
   data () {
