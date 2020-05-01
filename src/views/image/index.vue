@@ -70,44 +70,7 @@
           </div>
         </el-col>
 
-      </el-row>
-      <!-- /素材列表 -->
-      <!-- 分页列表 -->
-
-   <!-- total设定总数据的条数,默认按照10条每页计算总页码
-   page-size 每页显示条目个数，支持 .sync 修饰符，默认每页 10 条
-   -->
-        <el-pagination
-          background
-          layout="prev, pager, next"
-          :total="totalCount"
-          :page-size="pageSize"
-          @current-change="onCurrentChange"
-          :current-page.sync="page"
-        >
-        </el-pagination>
-      <!-- /分页列表 -->
     </el-card>
-    <el-dialog
-      title="上传素材"
-      :visible.sync="dialogUploadVisible"
-      :append-to-body="true"
-    >
-        <!-- upload拖拽上传组件,action必须是完整路径 -->
-        <el-upload
-            class="upload-demo"
-            drag
-            action="http://ttapi.research.itcast.cn/mp/v1_0/user/images"
-            :headers="uploadHeaders"
-            name="image"
-            :on-success="onUploadSuccess"
-            :show-file-list="false"
-            multiple>
-            <i class="el-icon-upload"></i>
-            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-            <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
-        </el-upload>
-    </el-dialog>
   </div>
 </template>
 
@@ -212,27 +175,4 @@ export default {
 </script>
 
 <style scoped lang="less">
-.action-head{
-  padding-bottom: 20px;
-  display: flex;
- // 左右撑开
-  justify-content: space-between;
-}
-.image-item{
-  position: relative;
-}
-.image-action{
-  font-size: 25px;
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  color: #fff;
-  height: 40px;
-  background-color: rgba(204, 204, 204, .5);
-  position: absolute;
-  bottom: 4px;
-  left: 5px;
-  right: 5px;
-}
-
 </style>
