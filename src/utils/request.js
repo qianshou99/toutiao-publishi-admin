@@ -1,6 +1,7 @@
 // 基于axio封装请求模块
 import axios from 'axios'
 import JSONbig from 'json-bigint'
+import router from '@/router'
 // 创建一个axios实例,即复制一个axios
 // 通过这个实例去发请求,把需要的配置给这个实例来处理
 const request = axios.create({
@@ -23,6 +24,26 @@ const request = axios.create({
       return data
     }
   }]
+})
+// 响应拦截器
+request.interceptors.response.use(function (response) {
+  // 所有响应码为 2xx 的响应都会进入这里
+
+  // response 是响应处理
+  // 注意：一定要把响应结果 return，否则真正发请求的位置拿不到数据
+  return response
+}, function (error) {
+  // console.dir()可以显示一个对象的所有属性和方法
+  // console.dir(error)
+  // 任何超出 2xx 的响应码都会进入这里
+  if (error.response && error.response.status === 401) {
+    // 跳转到登录页面
+    // 清除本地存储中的用户登录状态
+    window.localStorage.removeItem('user')
+    router.push('/login')
+  }
+
+  return Promise.reject(error)
 })
 // 请求拦截器
 request.interceptors.request.use(function (config) {
