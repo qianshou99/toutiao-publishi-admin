@@ -30,7 +30,7 @@
         v-for="(img, index) in images"
         :key="index"
         class="image-item"
-        @click.native="selected = index"
+        @click.native="selec(index)"
       >
         <el-image
           style="height: 100px"
@@ -159,7 +159,9 @@ export default {
       totalCount: 0, // 总数据条数
       pageSize: 20, // 每页大小
       page: 1, // 当前页码
-      selected: null // 选中的索引
+      selected: null, // 选中的索引
+      selectpage: 0, // 选的第几页
+      selectIndex: null // 选中的第几个图片
     }
   },
   computed: {},
@@ -170,6 +172,11 @@ export default {
   },
   mounted () {},
   methods: {
+    selec (id) {
+      this.selected = id
+      this.selectpage = this.page
+      this.selectIndex = id
+    },
     loadImages (page = 1) {
       // 重置高亮页码，防止数据和页码不对应
       this.page = page
@@ -207,6 +214,11 @@ export default {
     },
 
     onPageChange (page) {
+      if (page === this.selectpage) {
+        this.selected = this.selectIndex
+      } else {
+        this.selected = null
+      }
       this.loadImages(page)
     },
 
