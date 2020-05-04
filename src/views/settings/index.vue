@@ -11,20 +11,20 @@
         </div>
         <el-row>
             <el-col :span="15">
-            <el-form ref="form" :model="user" label-width="70px">
-                <el-form-item label="编号">
+            <el-form ref="form" :model="user" label-width="80px" :rules="formRules">
+                <el-form-item label="编号" >
                 {{ user.id }}
                 </el-form-item>
                 <el-form-item label="手机">
                 {{ user.mobile }}
                 </el-form-item>
-                <el-form-item label="媒体名称">
+                <el-form-item label="媒体名称" prop="name">
                 <el-input v-model="user.name"></el-input>
                 </el-form-item>
-                <el-form-item label="媒体介绍">
+                <el-form-item label="媒体介绍" prop="intro">
                 <el-input type="textarea" v-model="user.intro"></el-input>
                 </el-form-item>
-                <el-form-item label="邮箱">
+                <el-form-item label="邮箱" prop="email">
                 <el-input v-model="user.email"></el-input>
                 </el-form-item>
                 <el-form-item>
@@ -112,7 +112,19 @@ export default {
       previewImage: '', // 预览图片
       cropper: null, // 裁切器实例
       updatePhotoLoading: false, // 更新用户头像 loading 状态
-      updateProfileLoading: false // 点击保存 loading 初始状态
+      updateProfileLoading: false, // 点击保存 loading 初始状态
+      formRules: {
+        name: [
+          { required: true, message: '请输入媒体名称', trigger: 'blur' },
+          { min: 5, max: 30, message: '长度在 5 到 30 个字符', trigger: 'blur' }
+        ],
+        intro: [
+          { required: true, message: '请输入内容', trigger: 'blur' }
+        ],
+        email: [
+          { required: true, message: '请输入邮箱地址', trigger: 'blur' }
+        ]
+      }
     }
   },
   computed: {},
