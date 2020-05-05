@@ -1,5 +1,7 @@
 <template>
-  <div class="home-container">首页</div>
+  <div class="home-container">
+    <img src="./shouye.png" class="tu">
+  </div>
 </template>
 
 <script>
@@ -23,5 +25,10 @@ export default {
 </script>
 
 <style scoped lang="less">
-
+.tu {
+  width: 50%;
+  position: absolute;
+  top: 30%;
+  left: 25%;
+}
 </style>

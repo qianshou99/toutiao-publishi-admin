@@ -8,6 +8,7 @@
       router
       :collapse="isCollapse"
       >
+      <img src="./logo_admin.png" alt="" class="log">
        <el-menu-item index="/">
         <i class="el-icon-s-home"></i>
         <span slot="title">首页</span>
@@ -65,5 +66,10 @@ export default {
     margin-right: 10px;
     padding-left: 5px;
   }
+}
+.log {
+  width: 90%;
+  padding-left: 10px;
+  padding-top: 10px;
 }
 </style>
